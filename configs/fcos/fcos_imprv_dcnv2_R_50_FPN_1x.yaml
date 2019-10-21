@@ -26,19 +26,19 @@ MODEL:
     # we only use dcn in the last layer of towers
     USE_DCN_IN_TOWER: True
 DATASETS:
-  TRAIN: ("coco_2014_train", "coco_2014_valminusminival")
-  TEST: ("coco_2014_minival",)
+  TRAIN: ("cityscapes_fine_instanceonly_seg_train_cocostyle",)
+  TEST: ("cityscapes_fine_instanceonly_seg_val_cocostyle",)
 INPUT:
-  MIN_SIZE_TRAIN: (800,)
-  MAX_SIZE_TRAIN: 1333
-  MIN_SIZE_TEST: 800
-  MAX_SIZE_TEST: 1333
+  MIN_SIZE_TRAIN: (800, 832, 864, 896, 928, 960, 992, 1024, 1024)
+  MAX_SIZE_TRAIN: 2048
+  MIN_SIZE_TEST: 1024
+  MAX_SIZE_TEST: 2048
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 SOLVER:
   BASE_LR: 0.01
   WEIGHT_DECAY: 0.0001
-  STEPS: (60000, 80000)
-  MAX_ITER: 90000
+  STEPS: (16000, 21000)
+  MAX_ITER: 24000
   IMS_PER_BATCH: 16
   WARMUP_METHOD: "constant"

@@ -159,9 +159,9 @@ def do_train(
                     loss_dict = model(images_val, targets_val)
                     losses = sum(loss for loss in loss_dict.values())
                     loss_dict_reduced = reduce_loss_dict(loss_dict)
-                    losses_reduced = sum(loss for loss in loss_dict_reduced.values())
-                    meters_val.update(loss=losses_reduced, **loss_dict_reduced)
-                writer.add_scalar('loss/val_loss_sum',losses_reduced,iteration)
+                    losses_reduced_val = sum(loss for loss in loss_dict_reduced.values())
+                    meters_val.update(loss=losses_reduced_val, **loss_dict_reduced)
+                writer.add_scalar('loss/loss',{ 'loss_sum':losses_reduced,'val_loss_sum':losses_reduced_val},iteration)
 
             synchronize()
             logger.info(
