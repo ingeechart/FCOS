@@ -48,6 +48,14 @@ class MetricLogger(object):
                 v = v.item()
             assert isinstance(v, (float, int))
             self.meters[k].update(v)
+    # ingee add for tensorboard
+    # ['loss', 'loss_cls', 'loss_reg', 'loss_centerness']
+    # avg: average over latest 20, golval_avg: average over all valset
+    def returnAvg(self, name):
+        return self.meters[name].avg
+
+    def returnGlobalAvg(self, name):
+        return self.meters[name].global_avg
 
     def __getattr__(self, attr):
         if attr in self.meters:

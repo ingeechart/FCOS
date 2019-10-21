@@ -111,8 +111,11 @@ def do_train(
 
         if iteration % 20 == 0 or iteration == max_iter:
             # ingee add for tensorboard
-            writer.add_scalar('loss/loss_sum',losses_reduced,iteration)
             writer.add_scalar('learning_rate', optimizer.param_groups[0]["lr"],iteration)
+            writer.add_scalar('loss/loss_avg',meters.returnAvg('loss'),iteration)
+            writer.add_scalars('loss/losses_avg', {'loss_cls_avg': meters.returAvg('loss_cls'),
+                                                    'loss_reg_avg': meters.returAvg('loss_reg'),
+                                                    'loss_centerness_avg': meters.returAvg('loss_centerness')},iteration)
             logger.info(
                 meters.delimiter.join(
                     [
@@ -159,10 +162,15 @@ def do_train(
                     loss_dict = model(images_val, targets_val)
                     losses = sum(loss for loss in loss_dict.values())
                     loss_dict_reduced = reduce_loss_dict(loss_dict)
-                    losses_reduced_val = sum(loss for loss in loss_dict_reduced.values())
-                    meters_val.update(loss=losses_reduced_val, **loss_dict_reduced)
-                writer.add_scalars('loss/loss', {'loss_real': losses_reduced, 'val_loss_sum':losses_reduced_val },iteration)
+                    losses_reduced = sum(loss for loss in loss_dict_reduced.values())
+                    meters_val.update(loss=losses_reduced, **loss_dict_reduced)
+                    # losses_reduced_val = sum(loss for loss in loss_dict_reduced.values())
+                    # meters_val.update(loss=losses_reduced_val, **loss_dict_reduced)
+                # writer.add_scalars('loss/loss', {'loss_real': losses_reduced, 'val_loss_sum':losses_reduced_val },iteration)
             synchronize()
+            writer.add_scalars('loss/loss_trainVal', {'loss_train_global': meters.returnGlobalAvg('loss'),
+                                                    'loss_train': meters.returnAvg('loss'), 
+                                                    'loss_val': meters_val.returnGlobalAvg('loss')},iteration)
             logger.info(
                 meters_val.delimiter.join(
                     [
