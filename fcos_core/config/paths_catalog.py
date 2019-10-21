@@ -97,17 +97,21 @@ class DatasetCatalog(object):
             # PASCAL VOC2012 doesn't made the test annotations available, so there's no json annotation
         },
         "cityscapes_fine_instanceonly_seg_train_cocostyle": {
-            "img_dir": "cityscapes/images",
+            "img_dir": "cityscapes/images_coco/train",
             "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_train.json"
         },
         "cityscapes_fine_instanceonly_seg_val_cocostyle": {
-            "img_dir": "cityscapes/images",
+            "img_dir": "cityscapes/images_coco/val",
             "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_val.json"
         },
         "cityscapes_fine_instanceonly_seg_test_cocostyle": {
             "img_dir": "cityscapes/images",
             "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_test.json"
-        }
+        },
+        "cityscapes_fine_instanceonly_seg_trainExtra_cocostyle": {
+            "img_dir": "cityscapes/images_coco/train_extra",
+            "ann_file": "cityscapes/annotations/instancesonly_filtered_gtCoarse_train_extra.json"
+        },
     }
 
     @staticmethod
