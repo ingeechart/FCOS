@@ -112,7 +112,7 @@ def do_train(
         if iteration % 20 == 0 or iteration == max_iter:
             # ingee add for tensorboard
             writer.add_scalar('learning_rate', optimizer.param_groups[0]["lr"],iteration)
-            writer.add_scalar('loss/loss_avg',meters.returnAvg('loss'),iteration)
+            writer.add_scalar('loss/sum_avg',meters.returnAvg('loss'),iteration)
             writer.add_scalars('loss/losses_avg', {'loss_cls_avg': meters.returnAvg('loss_cls'),
                                                     'loss_reg_avg': meters.returnAvg('loss_reg'),
                                                     'loss_centerness_avg': meters.returnAvg('loss_centerness')},iteration)
@@ -138,7 +138,7 @@ def do_train(
         #ingee add
         if data_loader_val is not None and test_period > 0 and iteration % test_period ==0:
             meters_val = MetricLogger(delimiter="  ")
-            # synchronize()
+            synchronize()
             # _ = inference(  # The result can be used for additional logging, e. g. for TensorBoard
             #     model,
             #     # The method changes the segmentation mask format in a data loader,
@@ -152,8 +152,8 @@ def do_train(
             #     expected_results_sigma_tol=cfg.TEST.EXPECTED_RESULTS_SIGMA_TOL,
             #     output_folder=None,
             # )
-            synchronize()
-            model.train()
+            # synchronize()
+            # model.train()
             # add in second adding loss logging properly
             with torch.no_grad():
                 for iteration_val, (images_val, targets_val, _) in enumerate(tqdm(data_loader_val)):
@@ -167,10 +167,10 @@ def do_train(
                     # losses_reduced_val = sum(loss for loss in loss_dict_reduced.values())
                     # meters_val.update(loss=losses_reduced_val, **loss_dict_reduced)
                 # writer.add_scalars('loss/loss', {'loss_real': losses_reduced, 'val_loss_sum':losses_reduced_val },iteration)
+            writer.add_scalars('loss/global', {'loss_Global': meters.returnGlobalAvg('loss'),
+                                                        'loss_train': meters.returnAvg('loss'), 
+                                                        'loss_val': meters_val.returnGlobalAvg('loss')}, iteration) 
             synchronize()
-            writer.add_scalars('loss/loss_trainVal', {'loss_train_global': meters.returnGlobalAvg('loss'),
-                                                    'loss_train': meters.returnAvg('loss'), 
-                                                    'loss_val': meters_val.returnGlobalAvg('loss')},iteration)
             logger.info(
                 meters_val.delimiter.join(
                     [
@@ -188,7 +188,9 @@ def do_train(
                     lr=optimizer.param_groups[0]["lr"],
                     memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0,
                 )
-            )               
+            )
+
+                          
         # ingee end 
         if iteration == max_iter:
             checkpointer.save("model_final", **arguments)
