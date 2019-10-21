@@ -113,9 +113,9 @@ def do_train(
             # ingee add for tensorboard
             writer.add_scalar('learning_rate', optimizer.param_groups[0]["lr"],iteration)
             writer.add_scalar('loss/loss_avg',meters.returnAvg('loss'),iteration)
-            writer.add_scalars('loss/losses_avg', {'loss_cls_avg': meters.returAvg('loss_cls'),
-                                                    'loss_reg_avg': meters.returAvg('loss_reg'),
-                                                    'loss_centerness_avg': meters.returAvg('loss_centerness')},iteration)
+            writer.add_scalars('loss/losses_avg', {'loss_cls_avg': meters.returnAvg('loss_cls'),
+                                                    'loss_reg_avg': meters.returnAvg('loss_reg'),
+                                                    'loss_centerness_avg': meters.returnAvg('loss_centerness')},iteration)
             logger.info(
                 meters.delimiter.join(
                     [
