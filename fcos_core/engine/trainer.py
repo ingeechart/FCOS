@@ -112,8 +112,8 @@ def do_train(
         if iteration % 20 == 0 or iteration == max_iter:
             # ingee add for tensorboard
             writer.add_scalar('learning_rate', optimizer.param_groups[0]["lr"],iteration)
-            writer.add_scalar('loss/sum_avg',meters.returnAvg('loss'),iteration)
-            writer.add_scalars('loss/losses_avg', {'loss_cls_avg': meters.returnAvg('loss_cls'),
+            writer.add_scalar('loss/lossSum_avg',meters.returnAvg('loss'),iteration)
+            writer.add_scalars('loss/losses', {'loss_cls_avg': meters.returnAvg('loss_cls'),
                                                     'loss_reg_avg': meters.returnAvg('loss_reg'),
                                                     'loss_centerness_avg': meters.returnAvg('loss_centerness')},iteration)
             logger.info(
