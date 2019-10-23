@@ -111,9 +111,9 @@ def do_train(
 
         if iteration % 20 == 0 or iteration == max_iter:
             # ingee add for tensorboard
-            writer.add_scalar('learning_rate', optimizer.param_groups[0]["lr"],iteration)
-            writer.add_scalar('loss/lossSum_avg',meters.returnAvg('loss'),iteration)
-            writer.add_scalars('loss/losses', {'loss_cls_avg': meters.returnAvg('loss_cls'),
+            writer.add_scalar('r50Coco/learning_rate', optimizer.param_groups[0]["lr"],iteration)
+            writer.add_scalar('r50Coco/lossSum_avg',meters.returnAvg('loss'),iteration)
+            writer.add_scalars('r50Coco/losses', {'loss_cls_avg': meters.returnAvg('loss_cls'),
                                                     'loss_reg_avg': meters.returnAvg('loss_reg'),
                                                     'loss_centerness_avg': meters.returnAvg('loss_centerness')},iteration)
             logger.info(
@@ -164,12 +164,10 @@ def do_train(
                     loss_dict_reduced = reduce_loss_dict(loss_dict)
                     losses_reduced = sum(loss for loss in loss_dict_reduced.values())
                     meters_val.update(loss=losses_reduced, **loss_dict_reduced)
-                    # losses_reduced_val = sum(loss for loss in loss_dict_reduced.values())
-                    # meters_val.update(loss=losses_reduced_val, **loss_dict_reduced)
-                # writer.add_scalars('loss/loss', {'loss_real': losses_reduced, 'val_loss_sum':losses_reduced_val },iteration)
-            writer.add_scalars('loss/global', {'loss_Global': meters.returnGlobalAvg('loss'),
-                                                        'loss_train': meters.returnAvg('loss'), 
-                                                        'loss_val': meters_val.returnGlobalAvg('loss')}, iteration) 
+            #{'loss_Global': meters.returnGlobalAvg('loss'),
+            writer.add_scalars('r50Coco/global', {'loss_train': meters.returnAvg('loss'),
+                                                'loss_val': meters_val.returnGlobalAvg('loss'),
+                                                'valossAvg': meters_val.returnAvg('loss')}, iteration) 
             synchronize()
             logger.info(
                 meters_val.delimiter.join(
@@ -197,6 +195,7 @@ def do_train(
 
     total_training_time = time.time() - start_training_time
     total_time_str = str(datetime.timedelta(seconds=total_training_time))
+    writer.close()
     logger.info(
         "Total training time: {} ({:.4f} s / it)".format(
             total_time_str, total_training_time / (max_iter)
