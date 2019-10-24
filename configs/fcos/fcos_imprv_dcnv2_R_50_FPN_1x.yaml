@@ -1,7 +1,7 @@
 # FCOS with improvements
 MODEL:
   META_ARCHITECTURE: "GeneralizedRCNN"
-  WEIGHT: "catalog://ImageNetPretrained/MSRA/R-50"
+  WEIGHT: 'FCOS_imprv_dcnv2_R_50_FPN_1x_coco.pth' #"catalog://ImageNetPretrained/MSRA/R-50"
   RPN_ONLY: True
   FCOS_ON: True
   BACKBONE:
@@ -38,9 +38,10 @@ DATALOADER:
 SOLVER:
   BASE_LR: 0.01
   WEIGHT_DECAY: 0.0001
-  STEPS: (18000,)
-  MAX_ITER: 24000
-  IMS_PER_BATCH: 8
-  # WARMUP_METHOD: "constant"
+  STEPS: (1000, ) 
+  MAX_ITER: 4000
+  IMS_PER_BATCH: 16
+  CHECKPOINT_PERIOD: 1000
+  WARMUP_METHOD: "constant"
   # ingee add
-  TEST_PERIOD: 400
+  TEST_PERIOD: 200

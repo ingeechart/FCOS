@@ -1,30 +1,39 @@
 MODEL:
   META_ARCHITECTURE: "GeneralizedRCNN"
-  WEIGHT: "https://cloudstor.aarnet.edu.au/plus/s/xtixKaxLWmbcyf7/download#mobilenet_v2-ecbe2b5.pth"
+  WEIGHT: 'FCOS_syncbn_bs32_MNV2_FPN_1x_coco.pth' # "https://cloudstor.aarnet.edu.au/plus/s/xtixKaxLWmbcyf7/download#mobilenet_v2-ecbe2b5.pth"
   RPN_ONLY: True
   FCOS_ON: True
   BACKBONE:
     CONV_BODY: "MNV2-FPN-RETINANET"
-    FREEZE_CONV_BODY_AT: 0
+    # 아마 이거 바꿔야 될껄? 2~3으로  syncBN써서 안바꾼것 같은데 mobilenetV2를 찾아봐야하나
+    # freeze bn이 국룰.
+    FREEZE_CONV_BODY_AT: 2
   RESNETS:
     BACKBONE_OUT_CHANNELS: 256
   RETINANET:
     USE_C5: False # FCOS uses P5 instead of C5
+  # ingee added
+  FCOS:
+    NUM_CLASSES: 9    
   USE_SYNCBN: True
 DATASETS:
-  TRAIN: ("coco_2014_train", "coco_2014_valminusminival")
-  TEST: ("coco_2014_minival",)
+  # TRAIN: ("coco_2014_train", "coco_2014_valminusminival")
+  # TEST: ("coco_2014_minival",)
+  TRAIN: ("cityscapes_fine_instanceonly_seg_train_cocostyle", )
+  TEST: ("cityscapes_fine_instanceonly_seg_val_cocostyle",)
 INPUT:
-  MIN_SIZE_TRAIN: (800,)
-  MAX_SIZE_TRAIN: 1333
-  MIN_SIZE_TEST: 800
-  MAX_SIZE_TEST: 1333
+  MIN_SIZE_TRAIN: (800, 832, 864, 896, 928, 960, 992, 1024, 1024)
+  MAX_SIZE_TRAIN: 2048
+  MIN_SIZE_TEST: 1024
+  MAX_SIZE_TEST: 2048
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 SOLVER:
   BASE_LR: 0.01
   WEIGHT_DECAY: 0.0001
-  STEPS: (60000, 80000)
-  MAX_ITER: 90000
-  IMS_PER_BATCH: 32
-  WARMUP_METHOD: "constant"
+  STEPS: (1000,6000) # (60000, 80000) # 3000
+  MAX_ITER: 8000 # 4000
+  IMS_PER_BATCH: 32 # 32
+  # WARMUP_METHOD: "constant"
+  # ingee add
+  TEST_PERIOD: 200
