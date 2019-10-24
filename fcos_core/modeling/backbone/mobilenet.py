@@ -3,8 +3,8 @@
 # licensed under the  Apache License, Version 2.0, January 2004
 
 from torch import nn
-from torch.nn import BatchNorm2d
-#from fcos_core.layers import FrozenBatchNorm2d as BatchNorm2d
+# from torch.nn import BatchNorm2d
+from fcos_core.layers import FrozenBatchNorm2d as BatchNorm2d
 from fcos_core.layers import Conv2d
 
 
